@@ -1,31 +1,37 @@
 package org.squbs.sample
 
-import org.scalatest.{Matchers, FlatSpecLike}
-import org.squbs.lifecycle.GracefulStop
-import org.squbs.testkit.SimpleTestKit
-import org.squbs.unicomplex.{Unicomplex}
-import spray.http.{HttpResponse, HttpRequest}
+import akka.actor.{Actor, Props}
+import org.scalatest.{FlatSpecLike, Matchers}
+import org.squbs.testkit.TestRoute
+import spray.http.{HttpEntity, HttpResponse}
+import spray.routing.RequestContext
+import spray.testkit.ScalatestRouteTest
 
-class SampleSvcSpec extends SimpleTestKit with FlatSpecLike with Matchers with ResponseHelper{
+class SampleSvcSpec extends FlatSpecLike with Matchers with ScalatestRouteTest{
 
-  "SampleSvc" should "handle request correctly" in {
-    val routeActor = system.actorSelection("/user/squbs-seed/$a")
+  val route = TestRoute[SampleSvc]
 
-    routeActor ! HttpRequest()
-
-    val response = expectMsgType[HttpResponse]
-    response.entity.asString should be ("Hello world")
+  "route" should "handle request correctly" in {
+    Get() ~> route ~> check {
+      responseAs[String] should be("Hello world")
+    }
   }
 
-  "SampleSvc" should "handle actor request correctly" in {
-    val routeActor = system.actorSelection("/user/squbs-seed/$a")
-
-    routeActor ! HttpRequest(uri = "/actor")
-
-    verifyChunkResponse("there")
+  "route" should "handle actor path correctly" in {
+    // create actor
+    system.actorOf(Props[MockActor], "squbs-seed")
+    Get("/actor") ~> route ~> check {
+      responseAs[String] should be ("mock")
+    }
   }
+}
 
-  override protected def afterAll(): Unit = {
-    Unicomplex(system).uniActor ! GracefulStop
-  }
+class MockActor extends Actor {
+  override def receive: Receive = {case _ =>}
+
+  context.actorOf(Props(new Actor {
+    override def receive: Actor.Receive = {
+      case RequestContext(req, responder, _) => responder ! HttpResponse(entity = HttpEntity("mock"))
+    }
+  }), "sample")
 }
