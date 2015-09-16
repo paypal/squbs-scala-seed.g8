@@ -7,6 +7,7 @@ import spray.http._
 import spray.http.Uri.Path
 import spray.routing.RequestContext
 import concurrent.duration._
+import scala.language.postfixOps
 
 class SampleActorSpec extends TestKit(ActorSystem()) with FlatSpecLike with Matchers with ImplicitSender with ResponseHelper{
 
