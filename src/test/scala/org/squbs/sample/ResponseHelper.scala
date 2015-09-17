@@ -4,7 +4,6 @@ import akka.testkit.TestKitBase
 import org.scalatest.Matchers
 import spray.http.{ChunkedMessageEnd, MessageChunk, ChunkedResponseStart, Confirmed}
 import concurrent.duration._
-import scala.language.postfixOps
 
 trait ResponseHelper {
   this: TestKitBase with Matchers=>

@@ -7,7 +7,6 @@ import spray.http._
 import spray.routing.Route
 import spray.routing._
 import Directives._
-import scala.language.postfixOps
 
 class SampleSvc extends RouteDefinition {
   override def route: Route = path("actor") {ctx =>
