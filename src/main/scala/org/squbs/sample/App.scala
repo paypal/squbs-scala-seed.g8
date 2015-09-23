@@ -7,14 +7,16 @@ import spray.http._
 import spray.routing.Route
 import spray.routing._
 import Directives._
+import spray.httpx.PlayTwirlSupport._
 
 class SampleSvc extends RouteDefinition {
   override def route: Route = path("actor") {ctx =>
     // actor path = /user/ + cube-shortname + / + actor name
     context.actorSelection("/user/squbs-seed/sample") ! ctx
-  } ~ {
+  } ~ {ctx =>
     // otherwise go to default response
-    complete("Hello world")
+    val username = ctx.request.uri.query.getOrElse("user", "John")
+    ctx.complete(html.index(username))
   }
 }
 

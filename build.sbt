@@ -21,8 +21,12 @@ libraryDependencies ++= Seq(
   "org.squbs" %% "squbs-unicomplex" % squbsV,
   "org.squbs" %% "squbs-actormonitor" % squbsV,
   "org.squbs" %% "squbs-testkit" % squbsV % "test",
-  "io.spray" %% "spray-testkit" % "1.3.3" % "test"
+  "io.spray" %% "spray-testkit" % "1.3.3" % "test",
+  "org.webjars" % "webjars-locator-core" % "0.28",
+  "org.webjars.npm" % "bootstrap" % "3.3.5"
 )
+
+lazy val root = (project in file(".")).enablePlugins(SbtTwirl, SbtWeb)
 
 mainClass in (Compile, run) := Some("org.squbs.unicomplex.Bootstrap")
 
@@ -33,7 +37,7 @@ compileScalastyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).
 
 (compile in Compile) <<= (compile in Compile) dependsOn compileScalastyle
 
-coverageEnabled := true
+//coverageEnabled := true
 
 coverageMinimum := 100
 
