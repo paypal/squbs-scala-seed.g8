@@ -12,7 +12,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-language:postfixOps")
 
-val squbsV = "0.7.0-SNAPSHOT"
+val squbsV = "0.7.0"
 
 val akkaV = "2.3.13"
 
