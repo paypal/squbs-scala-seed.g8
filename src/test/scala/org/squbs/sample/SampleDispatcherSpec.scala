@@ -1,22 +1,18 @@
 package org.squbs.sample
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import akka.testkit.{ImplicitSender, TestKit}
-import org.scalatest.{Matchers, FlatSpecLike}
-import spray.http._
-import spray.http.Uri.Path
-import spray.routing.RequestContext
-import concurrent.duration._
+import org.scalatest.{FlatSpecLike, Matchers}
 
-class SampleDispatcherSpec extends TestKit(ActorSystem()) with FlatSpecLike with Matchers with ImplicitSender with ResponseHelper {
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
-  "SampleDispatcher" should "forward message to SampleActor" in {
-    val user = "test-user"
-    val ctx = RequestContext(HttpRequest(uri = s"?user=$user"), self, Path.Empty)
+class SampleDispatcherSpec extends TestKit(ActorSystem()) with FlatSpecLike with Matchers
+with ImplicitSender {
 
-    val target = system.actorOf(Props[SampleDispatcher])
-    target ! ctx
-
-    verifyChunkResponse(user)
+  "SampleDispatcher" should "forward message to SampleActor and get a response from SampleActor" in {
+    system.actorOf(Props[SampleDispatcher], "SampleDispatcher") ! PingRequest("foo")
+    expectMsg(10 seconds, PingResponse("Hello foo welcome to squbs!"))
+    lastSender.path.toString should fullyMatch regex """akka://default/user/SampleDispatcher/\$\w"""
   }
 }
