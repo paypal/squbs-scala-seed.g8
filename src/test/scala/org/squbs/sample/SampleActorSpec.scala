@@ -7,7 +7,7 @@ import org.scalatest.{FlatSpecLike, Matchers}
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class SampleActorSpec extends TestKit(ActorSystem()) with FlatSpecLike
+class SampleActorSpec extends TestKit(ActorSystem("SampleActorSpec")) with FlatSpecLike
 with Matchers with ImplicitSender {
 
   "SampleActor" should "emit single response for PingRequest" in {
@@ -20,12 +20,12 @@ with Matchers with ImplicitSender {
 
   "SampleActor" should "emit multiple responses for ChunkRequest" in {
 
-    val chunks = Seq("Hello ", "foo", " welcome ", "to ", "squbs!").map(PingResponse).toIterator
+    val chunks = Seq("Hello ", "foo", " welcome ", "to ", "squbs!")
 
     val target = system.actorOf(Props[SampleActor])
     watch(target)
     target ! ChunkRequest("foo", 200 milliseconds)
-    1 to 5 foreach { _ => expectMsg(1 second, chunks.next()) }
+    chunks foreach { chunk => expectMsg(1 second, PingResponse(chunk)) }
     expectMsg(1 second, ChunkEnd)
     expectTerminated(target, 1 seconds)
 
