@@ -14,9 +14,9 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-language:postfixOps")
 
-val squbsV = "0.7.1-SNAPSHOT"
+val squbsV = "0.8.0-SNAPSHOT"
 
-val akkaV = "2.3.13"
+val akkaV = "2.4.2"
 
 Revolver.settings
 
@@ -42,3 +42,7 @@ compileScalastyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).
 coverageMinimum := 100
 
 coverageFailOnMinimum := true
+
+xerial.sbt.Pack.packSettings
+
+packMain := Map("run" -> "org.squbs.unicomplex.Bootstrap")
