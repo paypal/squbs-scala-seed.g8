@@ -14,9 +14,9 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-language:postfixOps")
 
-val squbsV = "0.8.0-SNAPSHOT"
+val squbsV = "0.8.0"
 
-val akkaV = "2.4.2"
+val akkaV = "2.4.4"
 
 Revolver.settings
 
