@@ -1,24 +1,23 @@
 package org.squbs.sample
 
-import akka.actor.{Actor, Props}
+import akka.http.scaladsl.model.HttpEntity.{Chunk, LastChunk}
+import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.testkit.RouteTestTimeout
+import org.json4s.{DefaultFormats, native}
 import org.scalatest.{FlatSpecLike, Matchers}
-import org.squbs.httpclient.json.Json4sJacksonNoTypeHintsProtocol
-import org.squbs.testkit.TestRoute
-import spray.http.{MessageChunk, StatusCodes}
-import spray.testkit.ScalatestRouteTest
+import org.squbs.testkit.{CustomRouteTestKit, TestRoute}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class SampleSvcSpec extends FlatSpecLike with Matchers with ScalatestRouteTest {
+class SampleHttpServiceSpec extends CustomRouteTestKit(resources = Seq.empty, withClassPath = true)
+  with FlatSpecLike with Matchers {
 
   implicit val timeout = RouteTestTimeout(5 seconds)
 
-  val route = TestRoute[SampleHttpSvc]
+  val route = TestRoute[SampleHttpService]
 
-  system.actorOf(Props[MockSupervisor], "squbs-seed")
-
-  behavior of "the sample route"
+  behavior of "SampleHttpService"
 
   it should "handle simple request correctly" in {
     Get() ~> route ~> check {
@@ -33,7 +32,9 @@ class SampleSvcSpec extends FlatSpecLike with Matchers with ScalatestRouteTest {
   }
 
   it should "handle path segment and serialization" in {
-    import Json4sJacksonNoTypeHintsProtocol._
+    import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
+    implicit val serialization = native.Serialization
+    implicit val formats = DefaultFormats
     Get("/hello/foo") ~> route ~> check {
       responseAs[PingResponse] should be (PingResponse("Hello foo welcome to squbs!"))
     }
@@ -47,38 +48,43 @@ class SampleSvcSpec extends FlatSpecLike with Matchers with ScalatestRouteTest {
 
   it should "handle path segment, chunking, with delay" in {
     Get("/hello/foo/500") ~> route ~> check {
-      val expected = List("Hello ", "foo", " welcome ", "to ", "squbs!") map MessageChunk.apply
+      val expected = Chunk("Hello ") ::
+        Chunk("foo") ::
+        Chunk(" welcome ") ::
+        Chunk("to ") ::
+        Chunk("squbs!") ::
+        LastChunk :: Nil
       chunks should be (expected)
     }
   }
 
   it should "handle path segment, chunking, no delay" in {
     Get("/hello/foo/0") ~> route ~> check {
-      val expected = List("Hello ", "foo", " welcome ", "to ", "squbs!") map MessageChunk.apply
+      val expected = Chunk("Hello ") ::
+        Chunk("foo") ::
+        Chunk(" welcome ") ::
+        Chunk("to ") ::
+        Chunk("squbs!") ::
+        LastChunk :: Nil
       chunks should be (expected)
     }
   }
 
   it should "handle post serialization and deserialization" in {
-    import Json4sJacksonNoTypeHintsProtocol._
+    import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
+    implicit val serialization = native.Serialization
+    implicit val formats = DefaultFormats
     Post("/hello", PingRequest("bar")) ~> route ~> check {
       responseAs[PingResponse] should be (PingResponse("Hello bar welcome to squbs!"))
     }
   }
 
   it should "return bad request for request with blank field" in {
-    import Json4sJacksonNoTypeHintsProtocol._
+    import de.heikoseeberger.akkahttpjson4s.Json4sSupport._
+    implicit val serialization = native.Serialization
+    implicit val formats = DefaultFormats
     Post("/hello", PingRequest("")) ~> route ~> check {
       status should be (StatusCodes.BadRequest)
     }
   }
-}
-
-/**
-  * The MockSupervisor mocks a cube supervisor and starts the target actor without starting the
-  * squbs infrastructure.
-  */
-class MockSupervisor extends Actor {
-  def receive = {case _ =>}
-  context.actorOf(Props[SampleDispatcher], "sample")
 }
