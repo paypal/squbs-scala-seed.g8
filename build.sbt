@@ -6,7 +6,7 @@ version := "0.0.1-SNAPSHOT"
 
 organization in ThisBuild := "org.squbs.sample"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 crossPaths := false
 
@@ -14,9 +14,11 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-language:postfixOps")
 
-val squbsV = "0.8.0"
+val squbsV = "0.9.0-SNAPSHOT"
 
-val akkaV = "2.4.4"
+val akkaV = "2.4.16"
+
+val akkaHttpV = "10.0.1"
 
 Revolver.settings
 
@@ -24,10 +26,11 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.3",
   "org.squbs" %% "squbs-unicomplex" % squbsV,
   "org.squbs" %% "squbs-actormonitor" % squbsV,
+  "org.squbs" %% "squbs-actorregistry" % squbsV,
   "org.squbs" %% "squbs-httpclient" % squbsV,
   "org.squbs" %% "squbs-admin" % squbsV,
   "org.squbs" %% "squbs-testkit" % squbsV % "test",
-  "io.spray" %% "spray-testkit" % "1.3.3" % "test"
+  "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % "test"
 )
 
 mainClass in (Compile, run) := Some("org.squbs.unicomplex.Bootstrap")
