@@ -63,11 +63,11 @@ class SampleHttpService extends RouteDefinition {
   private val chunks =
     path("hello" / Segment / IntNumber) { (who, delay) =>
       onComplete(ActorLookup ? ChunkRequest(who, delay milliseconds)) {
-        case Success(source: Source[PingResponse, Any]) =>
+        case Success(srcMsg: ChunkSourceMessage) =>
           // This header is added for Chrome to handle chunking responses.  Please see
           // http://stackoverflow.com/questions/26164705/chrome-not-handling-chunked-responses-like-firefox-safari
           respondWithHeader(RawHeader("X-Content-Type-Options", "nosniff")) {
-            complete(HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, source.map {
+            complete(HttpEntity.Chunked(ContentTypes.`text/plain(UTF-8)`, srcMsg.source.map {
               case PingResponse("LastChunk") => LastChunk
               case PingResponse(msg) => Chunk(msg)
             }))

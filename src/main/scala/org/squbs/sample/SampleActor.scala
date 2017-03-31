@@ -10,6 +10,7 @@ import scala.concurrent.duration._
 case class PingRequest(who: String)
 case class PingResponse(message: String)
 case class ChunkRequest(who: String, delay: FiniteDuration)
+case class ChunkSourceMessage(source: Source[PingResponse, Any])
 case object EmptyRequest
 
 /**
@@ -51,6 +52,6 @@ class SampleActor extends Actor with ActorLogging {
           .delay(delay, DelayOverflowStrategy.backpressure)
           .withAttributes(Attributes.inputBuffer(initial = 1, max = 1))
 
-      sender() ! source
+      sender() ! ChunkSourceMessage(source)
   }
 }
