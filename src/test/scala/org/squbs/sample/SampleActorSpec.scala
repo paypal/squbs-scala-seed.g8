@@ -29,9 +29,9 @@ with Matchers with ImplicitSender {
     import akka.pattern.ask
     implicit val timeout: Timeout = 3 seconds
     implicit val materializer = ActorMaterializer()
-    val future = (target ? ChunkRequest("foo", 200 milliseconds)).mapTo[Source[PingResponse, Any]]
-    val source = Await.result(future, 2 seconds)
-    source.runWith(Sink.actorRef(self, "Done!"))
+    val future = (target ? ChunkRequest("foo", 200 milliseconds)).mapTo[ChunkSourceMessage]
+    val srcMessage = Await.result(future, 2 seconds)
+    srcMessage.source.runWith(Sink.actorRef(self, "Done!"))
     chunks foreach { chunk => expectMsg(1 second, PingResponse(chunk)) }
     expectMsg("Done!")
   }

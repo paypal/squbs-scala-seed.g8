@@ -2,7 +2,7 @@
 
 name := "squbs-seed"
 
-version := "0.0.1-SNAPSHOT"
+version := "0.1.0-SNAPSHOT"
 
 organization in ThisBuild := "org.squbs.sample"
 
@@ -18,7 +18,7 @@ val squbsV = "0.9.0-SNAPSHOT"
 
 val akkaV = "2.4.16"
 
-val akkaHttpV = "10.0.1"
+val akkaHttpV = "10.0.3"
 
 Revolver.settings
 
