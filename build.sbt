@@ -29,6 +29,8 @@ libraryDependencies ++= Seq(
   "org.squbs" %% "squbs-actorregistry" % squbsV,
   "org.squbs" %% "squbs-httpclient" % squbsV,
   "org.squbs" %% "squbs-admin" % squbsV,
+  "org.json4s" %% "json4s-native" % "3.5.0",
+  "de.heikoseeberger" %% "akka-http-json4s" % "1.11.0",
   "org.squbs" %% "squbs-testkit" % squbsV % "test",
   "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % "test"
 )
