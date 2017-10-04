@@ -1,12 +1,12 @@
 
 
-name := "squbs-seed"
+name := "$appname;format="norm"$"
 
-version := "0.1.0-SNAPSHOT"
+version := "$version$"
 
-organization in ThisBuild := "org.squbs.sample"
+organization in ThisBuild := "$organization$.$project;format="norm"$"
 
-scalaVersion := "2.11.8"
+scalaVersion := "$scala_version$"
 
 crossPaths := false
 
@@ -14,25 +14,21 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-language:postfixOps")
 
-val squbsV = "0.9.0-SNAPSHOT"
-
-val akkaV = "2.4.16"
-
-val akkaHttpV = "10.0.3"
+import Versions._
 
 Revolver.settings
 
 libraryDependencies ++= Seq(
-  "ch.qos.logback" % "logback-classic" % "1.1.3",
-  "org.squbs" %% "squbs-unicomplex" % squbsV,
-  "org.squbs" %% "squbs-actormonitor" % squbsV,
-  "org.squbs" %% "squbs-actorregistry" % squbsV,
-  "org.squbs" %% "squbs-httpclient" % squbsV,
-  "org.squbs" %% "squbs-admin" % squbsV,
-  "org.json4s" %% "json4s-native" % "3.5.0",
-  "de.heikoseeberger" %% "akka-http-json4s" % "1.11.0",
-  "org.squbs" %% "squbs-testkit" % squbsV % "test",
-  "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % "test"
+  "ch.qos.logback" % "logback-classic" % Versions.logbackClassicV,
+  "org.squbs" %% "squbs-unicomplex" % Versions.squbsV,
+  "org.squbs" %% "squbs-actormonitor" % Versions.squbsV,
+  "org.squbs" %% "squbs-actorregistry" % Versions.squbsV,
+  "org.squbs" %% "squbs-httpclient" % Versions.squbsV,
+  "org.squbs" %% "squbs-admin" % Versions.squbsV,
+  "org.json4s" %% "json4s-native" %  Versions.json4sV,
+  "de.heikoseeberger" %% "akka-http-json4s" % Versions.akkaHttpJson4sV,
+  "org.squbs" %% "squbs-testkit" % Versions.squbsV % "test",
+  "com.typesafe.akka" %% "akka-http-testkit" % Versions.akkaHttpV % "test"
 )
 
 mainClass in (Compile, run) := Some("org.squbs.unicomplex.Bootstrap")
@@ -58,7 +54,7 @@ dockerfile in docker := {
   val jarFile: File = sbt.Keys.`package`.in(Compile, packageBin).value
   val classpath = (managedClasspath in Compile).value
   val mainclass = "org.squbs.unicomplex.Bootstrap"
-  val jarTarget = s"/app/${jarFile.getName}"
+  val jarTarget = s"/app/\${jarFile.getName}"
   // Make a colon separated classpath with the JAR file
   val classpathString = classpath.files.map("/app/" + _.getName)
     .mkString(":") + ":" + jarTarget
