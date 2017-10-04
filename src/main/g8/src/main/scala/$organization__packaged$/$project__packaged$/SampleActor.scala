@@ -1,4 +1,4 @@
-package org.squbs.sample
+package $organization$.$project$
 
 import akka.actor._
 import akka.stream.scaladsl.Source
@@ -38,7 +38,7 @@ class SampleActor extends Actor with ActorLogging {
   def receive = {
 
     case PingRequest(who) =>
-      if (who.trim.nonEmpty) sender() ! PingResponse(s"Hello $who welcome to squbs!")
+      if (who.trim.nonEmpty) sender() ! PingResponse(s"Hello \$who welcome to squbs!")
       else sender() ! EmptyRequest
 
     case ChunkRequest(who, delay) =>
