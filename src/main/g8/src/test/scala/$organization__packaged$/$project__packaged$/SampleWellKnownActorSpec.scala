@@ -1,4 +1,4 @@
-package org.squbs.sample
+package $organization$.$project$
 
 import akka.testkit.ImplicitSender
 import org.scalatest.{FlatSpecLike, Matchers}
@@ -12,7 +12,7 @@ class SampleWellKnownActorSpec extends CustomTestKit(resources = Seq.empty, with
   with FlatSpecLike with Matchers with ImplicitSender {
 
   "SampleWellKnownActor" should "forward message to SampleActor and get a response from SampleActor" in {
-    ActorLookup("sample") ! PingRequest("foo")
+    ActorLookup("$project$") ! PingRequest("foo")
     expectMsg(1 second, PingResponse("Hello foo welcome to squbs!"))
   }
 }
