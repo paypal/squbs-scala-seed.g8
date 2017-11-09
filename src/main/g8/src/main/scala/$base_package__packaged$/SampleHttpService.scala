@@ -1,4 +1,4 @@
-package $organization$.$project$
+package $base_package$
 
 import akka.http.scaladsl.model.HttpEntity.{Chunk, LastChunk}
 import akka.http.scaladsl.model.headers.RawHeader

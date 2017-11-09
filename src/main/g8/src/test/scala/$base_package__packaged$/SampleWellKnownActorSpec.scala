@@ -1,4 +1,4 @@
-package $organization$.$project$
+package $base_package$
 
 import akka.testkit.ImplicitSender
 import org.scalatest.{FlatSpecLike, Matchers}
