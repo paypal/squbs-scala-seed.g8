@@ -36,15 +36,15 @@ mainClass in (Compile, run) := Some("org.squbs.unicomplex.Bootstrap")
 // enable scalastyle on compile
 lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
 
-compileScalastyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("").value
+compileScalastyle := scalastyle.in(Compile).toTask("").value
 
-(compile in Compile) <<= (compile in Compile) dependsOn compileScalastyle
+(compile in Compile) := ((compile in Compile) dependsOn compileScalastyle).value
 
 coverageMinimum := 100
 
 coverageFailOnMinimum := true
 
-xerial.sbt.Pack.packSettings
+enablePlugins(PackPlugin)
 
 packMain := Map("run" -> "org.squbs.unicomplex.Bootstrap")
 
