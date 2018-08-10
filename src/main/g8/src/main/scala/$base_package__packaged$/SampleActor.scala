@@ -1,4 +1,4 @@
-package $organization$.$project$
+package $base_package$
 
 import akka.actor._
 import akka.stream.scaladsl.Source

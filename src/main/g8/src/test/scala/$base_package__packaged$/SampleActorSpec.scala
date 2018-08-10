@@ -1,4 +1,4 @@
-package $organization$.$project$
+package $base_package$
 
 import akka.actor.{ActorSystem, Props}
 import akka.stream.ActorMaterializer
