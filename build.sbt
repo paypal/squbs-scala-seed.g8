@@ -1,7 +1,8 @@
-lazy val root = (project in file(".")).
-  settings(
-    name := "squbs-sample-scala.g8",
-    test in Test := {
+lazy val root = (project in file("."))
+  .enablePlugins(ScriptedPlugin)
+  .settings(
+    name := "squbs-scala-seed.g8",
+    Keys.test in Test := {
       val _ = (g8Test in Test).toTask("").value
     },
     scriptedLaunchOpts ++= List("-Xms1024m", "-Xmx1024m", "-XX:ReservedCodeCacheSize=128m", "-XX:MaxPermSize=256m", "-Xss2m", "-Dfile.encoding=UTF-8"),
